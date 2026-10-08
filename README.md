@@ -1,21 +1,25 @@
-<p align="center">
-  <img src="mobile/assets/images/autoguardia_logo.png" alt="AUTOGUARDIA" width="280">
-</p>
-
 # AUTOGUARDIA — CarGPT
 
-Aplicativo de gestão e acompanhamento automotivo desenvolvido em **Flutter**, com foco em Android. Reúne garagem virtual, histórico de manutenção, abastecimentos, relatórios de gastos, ferramentas de cálculo, telemetria OBD2 e um assistente de inteligência artificial em português brasileiro.
+Aplicativo de gestão e acompanhamento automotivo para **Android**. Reúne garagem virtual, histórico de manutenção, abastecimentos, relatórios de gastos, ferramentas de cálculo, telemetria OBD2 e um assistente de inteligência artificial em português brasileiro.
 
 O objetivo é ajudar o motorista a organizar os cuidados com o veículo, acompanhar os custos de uso e entender as informações fornecidas pela central eletrônica.
 
-**Status:** projeto em desenvolvimento, em versão beta. O nome do produto é AUTOGUARDIA; o repositório e alguns componentes utilizam o nome CarGPT.
+**Status:** projeto em desenvolvimento, em versão beta.
+
+## Sobre este repositório
+
+Este repositório apresenta o aplicativo, suas funcionalidades e informações sobre as versões disponibilizadas ao público.
+
+**O código-fonte permanece privado nesta fase, por questões de segurança.** Há a intenção de tornar o projeto **open source** no futuro, após a preparação para a abertura do código. Ainda não há uma data definida para essa publicação.
+
+Por enquanto, este espaço é destinado à documentação pública, à divulgação das novidades e, quando disponíveis, aos instaladores do aplicativo.
 
 ## Funcionalidades
 
 ### Conta e perfil
 
-- Cadastro e login com e-mail e senha pelo Supabase Auth.
-- Tratamento da confirmação de e-mail quando habilitada no projeto Supabase.
+- Cadastro e login com e-mail e senha.
+- Confirmação de e-mail quando exigida no cadastro.
 - Opção de lembrar o login no aparelho.
 - Edição de nome e sobrenome, com identificação personalizada na tela inicial.
 - Encerramento da sessão pelo aplicativo.
@@ -57,7 +61,7 @@ Os formulários utilizam rótulos fixos, pontuação brasileira e limites de ent
 - Formatos aceitos: JPEG, PNG, WebP e PDF, com limite de **10 MB** por arquivo.
 - Visualização do comprovante junto aos detalhes do serviço, incluindo leitura de PDFs no aplicativo.
 - Remoção ou substituição do anexo ao editar a manutenção.
-- Armazenamento no bucket privado `maintenance-invoices`, com regras de acesso por usuário.
+- Armazenamento privado dos comprovantes, com acesso associado à conta do usuário.
 
 ### Calendário de manutenção
 
@@ -175,163 +179,77 @@ Para habilitar, abra a tela **Conectar meu carro**, toque **sete vezes no títul
 - Chat automotivo em português brasileiro.
 - Seleção de um veículo da garagem para contextualizar as respostas.
 - Uso dos dados do veículo e das dez manutenções mais recentes como contexto, quando um veículo é selecionado.
-- Histórico armazenado no Supabase, com recuperação das últimas 100 mensagens ao abrir o chat.
-- Integração com Google Gemini por uma Supabase Edge Function.
-- Novas tentativas e modelo alternativo configurável para indisponibilidade temporária do provedor.
+- Histórico de conversas, com recuperação das últimas 100 mensagens ao abrir o chat.
+- Respostas geradas com inteligência artificial do Google Gemini.
+- Tratamento de indisponibilidade temporária do serviço de IA.
 - Acesso a partir dos atalhos de diagnóstico, códigos de falha e análise das leituras OBD2.
 
 ### Atualizações sem loja
 
 - Versão instalada disponível na área de perfil.
-- Botão **Buscar atualização**, com consulta à tabela `app_releases` no Supabase.
+- Botão **Buscar atualização** para consultar novas versões disponibilizadas pelo desenvolvedor.
 - Comparação pelo número de compilação do aplicativo.
 - Exibição da versão disponível e das notas da atualização.
 - Abertura do link do APK no navegador, seguida da instalação confirmada pelo usuário no Android.
 
-O APK pode ser hospedado em uma Release pública do GitHub ou em outro endereço HTTPS acessível. Consulte o [guia de publicação de atualizações](docs/atualizacoes-android.md).
+As versões para download, quando disponibilizadas, serão anunciadas na área **Releases** deste repositório.
 
-## Tecnologias e arquitetura
+## Download e instalação
 
-| Camada | Tecnologias |
-| --- | --- |
-| Aplicativo | Flutter e Dart. |
-| Autenticação e banco | Supabase Auth e PostgreSQL. |
-| Documentos | Supabase Storage, `file_picker` e `pdfrx`. |
-| Assistente | Supabase Edge Functions, TypeScript/Deno e Google Gemini. |
-| OBD2 | `flutter_bluetooth_serial`, com pacote local em `mobile/packages/`. |
-| Preferências locais | `shared_preferences`. |
-| Formatação | `intl` e formatadores brasileiros do projeto. |
-| Versão e downloads | `package_info_plus` e `url_launcher`. |
+Quando houver uma versão disponível, procure o APK na área **Releases** deste repositório.
 
-O aplicativo utiliza o Supabase diretamente para autenticação, veículos, manutenções, abastecimentos e histórico do chat. A chave da IA permanece no servidor, na Edge Function.
+1. Baixe o APK da versão desejada.
+2. Abra o arquivo no aparelho Android.
+3. Se solicitado, autorize a instalação pela fonte utilizada para abrir o APK.
+4. Confirme a instalação e abra a AUTOGUARDIA.
+5. Crie sua conta ou faça login para acessar seus veículos e registros.
 
-O diretório `backend/` contém um **protótipo separado** em Python/FastAPI, com SQLAlchemy, SQLite e autenticação própria. Ele não é necessário para executar os fluxos atuais do aplicativo Flutter.
+O aplicativo ainda está em fase beta. A disponibilidade de instaladores e de novas versões será informada neste repositório.
 
-## Estrutura do projeto
+### Como atualizar
 
-```text
-CarGPT/
-├── mobile/
-│   ├── lib/
-│   │   ├── core/              # Modelos, serviços, OBD2, formatadores e widgets
-│   │   └── features/
-│   │       ├── auth/          # Login, cadastro, perfil e atualizações
-│   │       ├── home/          # Tela inicial
-│   │       ├── garage/        # Veículos, abastecimentos, calendário e relatórios
-│   │       ├── maintenance/   # Serviços, histórico e comprovantes
-│   │       ├── obd/           # Conexão, painel, sensores e códigos de falha
-│   │       ├── chat/          # Assistente IA
-│   │       └── tools/         # Calculadoras automotivas
-│   ├── assets/               # Configuração local e imagens
-│   ├── packages/             # Dependências locais
-│   └── test/                 # Testes Flutter
-├── supabase/
-│   ├── schema.sql            # Tabelas, políticas e Storage
-│   ├── migrations/           # Migrações complementares
-│   └── functions/cargpt-chat/ # Integração com Gemini
-├── docs/                     # Guias do projeto
-└── backend/                  # Protótipo Python independente
-```
+No aplicativo, abra **Meu perfil → Buscar atualização**. Quando houver uma versão mais recente, consulte as novidades e toque em **Baixar atualização**. Depois do download, abra o APK e confirme a instalação no Android.
 
-## Como executar
+## O que é necessário para usar
 
-### Pré-requisitos
+- Aparelho Android compatível com a versão disponibilizada.
+- Conta no aplicativo para acessar a garagem, os registros e o assistente.
+- Conexão com a internet para acessar os dados da conta e utilizar a IA.
+- Adaptador OBD2 compatível com ELM327 por Bluetooth clássico para obter leituras reais do veículo.
+- Permissões de Bluetooth e, quando solicitada pelo Android, localização para a conexão com o adaptador.
 
-- Flutter com Dart compatível com o [pubspec.yaml](mobile/pubspec.yaml), que exige Dart `^3.12.0`.
-- Android SDK e um dispositivo ou emulador Android para executar o aplicativo.
-- Projeto Supabase configurado.
-- Adaptador OBD2 Bluetooth clássico compatível, para leituras reais.
-- Chave Google Gemini configurada no servidor, para utilizar o assistente.
+As calculadoras fazem os cálculos no próprio aparelho. O modo de demonstração OBD2 permite conhecer o painel sem conectar um veículo.
 
-### 1. Configurar o Supabase
+## Dados e privacidade
 
-No SQL Editor do projeto Supabase:
+- Os registros de veículos, manutenções, abastecimentos e conversas ficam associados à conta do usuário.
+- Os comprovantes de manutenção possuem controle de acesso por proprietário.
+- As preferências do painel OBD2 são salvas localmente no aparelho.
+- O histórico gráfico dos sensores é mantido durante a sessão, em uma janela de 30 segundos; não é um registro permanente das viagens.
+- Ao utilizar o assistente, mensagens e informações do veículo selecionado, incluindo manutenções recentes, podem ser enviadas ao provedor de IA para contextualizar a resposta.
 
-1. Execute [`supabase/schema.sql`](supabase/schema.sql) para configurar as tabelas, índices, políticas de acesso e o bucket de comprovantes.
-2. Aplique as migrações de [`supabase/migrations/`](supabase/migrations/) em ordem cronológica. Elas incluem o histórico de chat e a tabela de versões do app.
-3. Configure a confirmação de e-mail no Supabase Auth conforme o fluxo de cadastro desejado.
+## Relatar problemas e sugerir melhorias
 
-Em um banco existente, confira a estrutura antes de executar os scripts. O uso de `create table if not exists` não adapta automaticamente tabelas antigas com colunas incompatíveis.
+Utilize a área **Issues** deste repositório para relatar bugs ou sugerir funcionalidades.
 
-### 2. Configurar o aplicativo
+Ao relatar um problema, informe:
 
-Crie ou ajuste `mobile/assets/.env`:
+- Versão do aplicativo, disponível no perfil.
+- Modelo do aparelho e versão do Android.
+- Tela afetada e passos para reproduzir o problema.
+- Comportamento esperado e o que aconteceu.
+- Modelo do adaptador e veículo utilizado, se o problema envolver OBD2.
 
-```dotenv
-SUPABASE_URL=https://SEU_PROJETO.supabase.co
-SUPABASE_ANON_KEY=SUA_CHAVE_PUBLICA
-```
+Evite incluir dados pessoais, documentos ou informações de acesso nos relatos públicos.
 
-Esse é o arquivo carregado pelo Flutter. As configurações do protótipo `backend/` são independentes.
+## Disponibilidade e limites
 
-Use somente a chave pública anon/publishable no app. Credenciais administrativas, `service_role` e `GEMINI_API_KEY` não devem ser incluídas no aplicativo nem publicadas no repositório.
+O foco atual é Android. O diagnóstico OBD2 depende da compatibilidade do veículo, do adaptador e dos parâmetros disponibilizados pela central eletrônica.
 
-### 3. Configurar o assistente
-
-Publique [`supabase/functions/cargpt-chat/index.ts`](supabase/functions/cargpt-chat/index.ts) como a Edge Function `cargpt-chat` no mesmo projeto Supabase.
-
-Configure os seguintes secrets no servidor:
-
-| Variável | Uso |
-| --- | --- |
-| `GEMINI_API_KEY` | Chave de acesso ao Google Gemini; necessária para o chat. |
-| `GEMINI_MODEL` | Opcional: modelo principal a utilizar, disponível para a chave configurada. |
-| `GEMINI_FALLBACK_MODEL` | Opcional: modelo alternativo utilizado em caso de indisponibilidade temporária. |
-
-A função também utiliza `SUPABASE_URL` do ambiente Supabase e exige uma sessão autenticada. A configuração de verificação JWT está em [`supabase/config.toml`](supabase/config.toml).
-
-### 4. Instalar dependências e iniciar
-
-Na raiz do repositório:
-
-```powershell
-cd mobile
-flutter pub get
-flutter run
-```
-
-Para utilizar OBD2 real, pareie o adaptador no Android, conceda as permissões solicitadas e selecione o dispositivo na tela de conexão. As leituras dependem da compatibilidade do veículo, do adaptador e dos PIDs disponíveis.
-
-## Gerar o APK
-
-Na pasta `mobile`:
-
-```powershell
-flutter build apk --release
-```
-
-O arquivo gerado fica em:
-
-```text
-mobile/build/app/outputs/flutter-apk/app-release.apk
-```
-
-A versão é definida em [`mobile/pubspec.yaml`](mobile/pubspec.yaml), no formato `versão+númeroDaCompilação`. Aumente o número da compilação a cada atualização distribuída.
-
-A configuração Android atual utiliza assinatura de debug no build de release. A distribuição e as atualizações devem considerar a assinatura dos APKs já instalados. Os detalhes estão no [guia de atualizações Android](docs/atualizacoes-android.md).
-
-## Testes
-
-Os testes específicos dos recursos recentes cobrem atualização do app, alertas OBD2, histórico de sensores, navegação para detalhes, favoritos, formatação numérica e validação dos formulários.
-
-Na pasta `mobile`:
-
-```powershell
-flutter test test/app_update_service_test.dart test/obd_dashboard_test.dart test/form_fields_test.dart
-```
-
-## Dados e acesso
-
-- As tabelas utilizam políticas de Row Level Security (RLS) para restringir o acesso aos dados de cada usuário.
-- Os comprovantes de manutenção ficam em Storage privado, com caminhos associados ao proprietário.
-- A consulta de versões publicadas é permitida para usuários autenticados; a publicação é feita pela administração do projeto.
-- Os dados do veículo selecionado, manutenções recentes e mensagens enviadas ao assistente são usados como contexto na integração com o provedor de IA.
-- O histórico gráfico OBD2 é mantido em memória durante a sessão, em uma janela de 30 segundos; não é um registro permanente das viagens.
-
-## Escopo e disponibilidade
-
-O foco atual é Android. O repositório contém a estrutura Flutter para outras plataformas, mas a presença dessas pastas não garante suporte equivalente: a conexão OBD2 utiliza Bluetooth clássico no Android, e o fluxo de atualização por APK é específico dessa plataforma.
-
-Garagem, registros e chat dependem da configuração e da conectividade com o Supabase. As calculadoras fazem os cálculos localmente; o assistente depende também da disponibilidade do Gemini.
+Os dados de consumo, autonomia, gastos e próximas revisões são estimativas baseadas nas informações registradas. O assistente depende da disponibilidade do serviço de IA.
 
 As funções OBD2 e de IA ajudam a acompanhar informações e investigar sintomas. Uma leitura ou um código isolado não confirma a causa de uma falha; apagar códigos não corrige o problema mecânico.
+
+## Futuro open source
+
+A abertura do código faz parte dos planos do projeto. Quando essa etapa estiver pronta, as informações de acesso ao código, instalação para desenvolvimento e contribuição serão publicadas aqui.
